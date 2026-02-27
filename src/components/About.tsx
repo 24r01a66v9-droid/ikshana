@@ -116,8 +116,8 @@ export default function About() {
           >
             <div className="aspect-[16/9] rounded-[3rem] overflow-hidden pill-shadow bg-stone-100">
               <img 
-                src="https://picsum.photos/seed/community-service-team/1600/900" 
-                alt="Ikshana Team" 
+                src="https://picsum.photos/seed/institution-campus/1600/900" 
+                alt="Ikahana CMRIT Image" 
                 className="w-full h-full object-cover"
                 referrerPolicy="no-referrer"
               />
@@ -134,15 +134,15 @@ export default function About() {
           >
             <div className="flex items-center gap-4 mb-6">
               <div className="h-[1px] w-12 bg-brand-red"></div>
-              <span className="text-brand-red font-bold tracking-[0.2em] uppercase text-[10px]">Our Story</span>
+              <span className="text-brand-red font-bold tracking-[0.2em] uppercase text-[10px]">About Us</span>
             </div>
-            <h2 className="text-5xl md:text-7xl font-serif mb-8 tracking-tighter leading-none">About <br /><span className="italic text-stone-400">Ikshana.</span></h2>
+            <h2 className="text-5xl md:text-7xl font-serif mb-8 tracking-tighter leading-none">Welcome to <br /><span className="italic text-stone-400">Our Website.</span></h2>
             <div className="space-y-6 text-stone-600 text-lg leading-relaxed">
               <p>
-                The name <span className="text-brand-red font-medium">Ikshana</span> means "vision," and we believe in seeing the struggles of society and responding with compassion and responsibility.
+                This image represents our institution and its vibrant environment. We focus on innovation, learning, and growth.
               </p>
               <p>
-                Established on <span className="text-brand-red font-medium">May 6, 2021</span>, by a dynamic team of 15 volunteers, Ikshana Foundation was born in response to the hardships faced by small orphanages during the 2020 pandemic.
+                Explore our team and discover the passion, creativity, and dedication that drive our vision. We believe in innovation, collaboration, and building meaningful experiences for everyone we serve.
               </p>
               <div className="grid grid-cols-2 gap-8 pt-8">
                 <div className="group">
