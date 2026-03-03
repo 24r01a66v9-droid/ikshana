@@ -13,6 +13,7 @@ interface GalleryImage {
 export default function Gallery() {
   const [images, setImages] = useState<GalleryImage[]>([]);
   const [isAdding, setIsAdding] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [newImage, setNewImage] = useState({ title: "", category: "Event", file: null as File | null });
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -60,8 +61,9 @@ export default function Gallery() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newImage.file) return;
+    if (!newImage.file || loading) return;
 
+    setLoading(true);
     const reader = new FileReader();
     reader.onloadend = async () => {
       const base64String = reader.result as string;
@@ -89,9 +91,15 @@ export default function Gallery() {
           }
           setIsAdding(false);
           setNewImage({ title: "", category: "Event", file: null });
+        } else {
+          const errorData = await response.json();
+          alert(`Upload failed: ${errorData.details || errorData.error}`);
         }
       } catch (e) {
         console.error("Failed to upload photo", e);
+        alert("An error occurred during upload. Please try again.");
+      } finally {
+        setLoading(false);
       }
     };
     reader.readAsDataURL(newImage.file);
@@ -109,56 +117,58 @@ export default function Gallery() {
   };
 
   return (
-    <section id="gallery" className="py-32 px-6 bg-[#F9F8F6] overflow-hidden">
-      <div className="max-w-7xl mx-auto">
+    <section id="gallery" className="py-32 px-6 bg-[#fffcfc] overflow-hidden relative">
+      <div className="absolute top-0 right-0 w-full h-full opacity-[0.02] pointer-events-none">
+        <div className="absolute top-1/4 right-0 w-[800px] h-[800px] bg-brand-maroon rounded-full blur-[160px]" />
+      </div>
+
+      <div className="max-w-7xl mx-auto relative z-10">
         {/* Editorial Header */}
-        <div className="grid lg:grid-cols-2 gap-12 items-end mb-24">
+        <div className="grid lg:grid-cols-2 gap-12 items-end mb-32">
           <div>
             <motion.div 
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="flex items-center gap-4 mb-6"
+              className="flex items-center gap-6 mb-8"
             >
-              <div className="h-[1px] w-12 bg-brand-red"></div>
-              <span className="text-brand-red font-bold tracking-[0.2em] uppercase text-[10px]">Visual Archive</span>
+              <div className="h-[2px] w-16 bg-brand-maroon"></div>
+              <span className="text-brand-maroon font-bold tracking-[0.4em] uppercase text-[10px]">Visual Archive</span>
             </motion.div>
             <motion.h2 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-6xl md:text-8xl font-serif leading-[0.9] tracking-tighter mb-8"
+              className="text-7xl md:text-9xl font-serif leading-[0.85] tracking-tighter mb-10"
             >
               Captured <br />
-              <span className="italic text-stone-400">Moments.</span>
+              <span className="italic text-brand-maroon underline underline-offset-8 decoration-brand-maroon/10">Moments.</span>
             </motion.h2>
             <motion.p 
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="text-stone-500 text-lg max-w-md leading-relaxed"
+              className="text-brand-maroon/60 text-xl max-w-md leading-relaxed font-serif italic"
             >
-              A curated collection of impact, community, and the spirit of Ikshana. 
-              Every frame tells a story of change.
+              "A curated collection of impact, community, and the spirit of Ikshana. Every frame tells a story of change and hope."
             </motion.p>
           </div>
           
-          <div className="flex flex-col items-start lg:items-end gap-6">
+          <div className="flex flex-col items-start lg:items-end gap-10">
             <motion.button 
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => setIsAdding(true)}
-              className="group relative flex items-center gap-4 bg-stone-900 text-white pl-8 pr-10 py-5 rounded-full font-bold tracking-widest uppercase text-xs transition-all hover:bg-brand-red overflow-hidden"
+              className="group relative flex items-center gap-6 bg-brand-maroon text-white px-12 py-6 rounded-2xl font-bold tracking-widest uppercase text-[10px] transition-all hover:bg-stone-900 overflow-hidden shadow-2xl shadow-brand-maroon/30"
             >
-              <span className="relative z-10 flex items-center gap-3">
-                <Camera size={16} />
+              <span className="relative z-10 flex items-center gap-4">
+                <Camera size={20} />
                 Contribute to Gallery
               </span>
-              <div className="absolute inset-0 bg-brand-red translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
             </motion.button>
-            <div className="text-[10px] font-bold uppercase tracking-widest text-stone-400 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-brand-red animate-pulse"></span>
+            <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-brand-maroon/40 flex items-center gap-4">
+              <div className="w-3 h-3 rounded-full bg-brand-maroon animate-ping"></div>
               {images.length} Stories Shared
             </div>
           </div>
@@ -168,25 +178,17 @@ export default function Gallery() {
           <motion.div 
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            className="aspect-[21/9] flex flex-col items-center justify-center border border-stone-200 rounded-[4rem] bg-white/50 backdrop-blur-sm relative overflow-hidden"
+            className="aspect-[21/9] flex flex-col items-center justify-center border border-brand-maroon/10 rounded-[4rem] bg-stone-50/30 relative overflow-hidden"
           >
-            <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
-              <div className="grid grid-cols-12 h-full">
-                {[...Array(12)].map((_, i) => (
-                  <div key={i} className="border-r border-stone-900 h-full"></div>
-                ))}
-              </div>
-            </div>
-            
             <div className="relative z-10 text-center px-6">
-              <div className="w-20 h-20 bg-stone-100 text-stone-300 rounded-full flex items-center justify-center mx-auto mb-8">
+              <div className="w-20 h-20 bg-white text-brand-maroon/20 rounded-full flex items-center justify-center mx-auto mb-8 shadow-sm">
                 <ImageIcon size={40} />
               </div>
-              <h3 className="text-2xl font-serif mb-4">The archive is currently empty</h3>
-              <p className="text-stone-400 mb-8 max-w-sm mx-auto">Be the first to document a moment and share it with the community.</p>
+              <h3 className="text-2xl font-serif mb-4 text-brand-maroon">The archive is currently empty</h3>
+              <p className="text-brand-maroon/40 mb-8 max-w-sm mx-auto">Be the first to document a moment and share it with the community.</p>
               <button 
                 onClick={() => setIsAdding(true)}
-                className="text-brand-red font-bold tracking-widest uppercase text-xs hover:tracking-[0.2em] transition-all"
+                className="text-brand-maroon font-bold tracking-widest uppercase text-xs hover:tracking-[0.2em] transition-all"
               >
                 Upload Photo +
               </button>
@@ -203,7 +205,7 @@ export default function Gallery() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ delay: index * 0.05 }}
-                  className="break-inside-avoid group relative rounded-[2.5rem] overflow-hidden bg-white border border-stone-100"
+                  className="break-inside-avoid group relative rounded-[2.5rem] overflow-hidden bg-white border border-brand-maroon/5 hover:shadow-2xl transition-all duration-500"
                 >
                   <div className="relative aspect-auto overflow-hidden">
                     <img 
@@ -211,10 +213,10 @@ export default function Gallery() {
                       alt={image.title}
                       className="w-full h-auto object-cover transition-transform duration-1000 group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-stone-900/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-brand-maroon/60 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center backdrop-blur-sm">
                       <button 
                         onClick={() => removeImage(image.id)}
-                        className="w-14 h-14 bg-white text-brand-red rounded-full flex items-center justify-center hover:bg-brand-red hover:text-white transition-all transform translate-y-4 group-hover:translate-y-0 duration-500"
+                        className="w-14 h-14 bg-white text-brand-maroon rounded-full flex items-center justify-center hover:bg-stone-900 hover:text-white transition-all transform translate-y-4 group-hover:translate-y-0 duration-500 shadow-xl"
                         title="Delete from archive"
                       >
                         <Trash2 size={20} />
@@ -224,12 +226,12 @@ export default function Gallery() {
                   
                   <div className="p-8">
                     <div className="flex justify-between items-start mb-4">
-                      <span className="px-3 py-1 bg-stone-100 text-stone-500 text-[9px] font-bold uppercase tracking-widest rounded-full">
+                      <span className="px-3 py-1 bg-brand-maroon/5 text-brand-maroon text-[9px] font-bold uppercase tracking-widest rounded-full">
                         {image.category}
                       </span>
-                      <span className="text-stone-300 text-[10px] font-mono">{image.date}</span>
+                      <span className="text-brand-maroon/30 text-[10px] font-mono">{image.date}</span>
                     </div>
-                    <h3 className="text-xl font-serif leading-tight group-hover:text-brand-red transition-colors">
+                    <h3 className="text-xl font-serif leading-tight group-hover:text-brand-maroon transition-colors text-brand-maroon">
                       {image.title}
                     </h3>
                   </div>
@@ -372,10 +374,10 @@ export default function Gallery() {
 
                   <button 
                     type="submit"
-                    disabled={!newImage.file}
+                    disabled={!newImage.file || loading}
                     className="w-full bg-stone-900 text-white py-6 rounded-2xl font-bold tracking-[0.3em] uppercase text-[10px] hover:bg-brand-red transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-xl hover:shadow-brand-red/20"
                   >
-                    Archive Moment
+                    {loading ? "Archiving..." : "Archive Moment"}
                   </button>
                 </form>
               </div>

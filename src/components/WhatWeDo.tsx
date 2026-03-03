@@ -30,35 +30,45 @@ export default function WhatWeDo() {
   ];
 
   return (
-    <section className="py-24 px-6 bg-white">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-20">
-          <span className="text-brand-red font-bold tracking-widest uppercase text-xs mb-4 block">Our Impact Areas</span>
-          <h2 className="text-4xl md:text-5xl font-serif">What We Do</h2>
+    <section className="py-32 px-6 bg-white relative overflow-hidden">
+      <div className="max-w-7xl mx-auto relative z-10">
+        <div className="text-center mb-24">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="flex flex-col items-center gap-4"
+          >
+            <span className="text-brand-maroon font-bold tracking-[0.3em] uppercase text-[10px] mb-2">Our Impact Areas</span>
+            <h2 className="text-6xl md:text-7xl font-serif tracking-tighter text-brand-maroon">What We <span className="italic text-brand-maroon/40">Do.</span></h2>
+            <div className="h-[1px] w-24 bg-brand-maroon/20 mt-4"></div>
+          </motion.div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid md:grid-cols-2 gap-10">
           {services.map((service, i) => (
             <motion.div
               key={service.title}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="group p-10 rounded-[3rem] border border-stone-100 hover:border-brand-red/20 hover:bg-brand-cream/10 transition-all duration-500"
+              className="group p-12 rounded-[4rem] border border-stone-50 bg-stone-50/50 hover:bg-white hover:shadow-2xl hover:border-brand-maroon/10 transition-all duration-700 relative overflow-hidden"
             >
-              <div className="flex items-start gap-6">
-                <div className="w-16 h-16 bg-stone-50 rounded-2xl flex items-center justify-center text-brand-red group-hover:bg-brand-red group-hover:text-white transition-all duration-500 shrink-0">
-                  <service.icon size={32} />
+              <div className="absolute top-0 right-0 w-48 h-48 bg-brand-maroon/[0.02] rounded-full blur-3xl translate-x-1/2 -translate-y-1/2 group-hover:bg-brand-maroon/[0.05] transition-colors" />
+              
+              <div className="flex flex-col lg:flex-row items-start gap-10 relative z-10">
+                <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center text-brand-maroon group-hover:bg-brand-maroon group-hover:text-white transition-all duration-700 shrink-0 shadow-xl shadow-stone-200/50 group-hover:shadow-brand-maroon/30 group-hover:-rotate-6">
+                  <service.icon size={36} />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-serif mb-4">{service.title}</h3>
-                  <p className="text-stone-500 mb-8 leading-relaxed">
-                    {service.description}
+                  <h3 className="text-3xl font-serif mb-6 group-hover:text-brand-maroon transition-colors text-brand-maroon">{service.title}</h3>
+                  <p className="text-brand-maroon/60 mb-10 leading-relaxed text-lg italic">
+                    "{service.description}"
                   </p>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-3">
                     {service.details.map((detail) => (
-                      <span key={detail} className="px-4 py-1.5 bg-stone-50 text-stone-400 text-[10px] font-bold uppercase tracking-widest rounded-full group-hover:bg-white transition-colors">
+                      <span key={detail} className="px-5 py-2 bg-white text-brand-maroon/40 text-[10px] font-bold uppercase tracking-widest rounded-full border border-stone-100 group-hover:border-brand-maroon/20 group-hover:text-brand-maroon transition-all">
                         {detail}
                       </span>
                     ))}
